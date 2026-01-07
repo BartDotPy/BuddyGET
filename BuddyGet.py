@@ -28,11 +28,9 @@ if st.sidebar.button('Dodaj do listy'):
     #potem dodać baze danych i przekazanie wartości
         
 
-
 # Zamiana danych na tabelę (DataFrame)
 to_table = list(st.session_state['wydatki'].items())
 df = pd.DataFrame(to_table, columns=['Kategoria', 'Kwota [PLN]'])
-
 
 
 col1, col2 = st.columns(2, vertical_alignment = 'center') #podział na 2 kolumny, wyśrodkowanie
@@ -52,3 +50,15 @@ with col2:
 #Podsumowanie budżetu
 suma = df['Kwota [PLN]'].sum()
 st.metric(label="Łączne wydatki", value=f"{suma} PLN")
+
+
+st.header('Eksport danych - CSV (Excel)')
+csv_data = df.to_csv(index=False).encode('utf-8')
+
+st.download_button(
+    label = 'Pobierz dane',
+    data = csv_data,
+    file_name = 'moj_budzet.csv',
+    mime = 'text/csv' 
+
+)
