@@ -32,6 +32,31 @@ if st.sidebar.button('Dodaj do listy'):
 to_table = list(st.session_state['wydatki'].items())
 df = pd.DataFrame(to_table, columns=['Kategoria', 'Kwota [PLN]'])
 
+st.sidebar.divider()
+st.sidebar.header('Wgraj dane')
+uploaded_file = st.sidebar.file_uploader('Wybierz plik CSV', type=['csv'])
+
+if uploaded_file is not None:
+    if st.sidebar.button('Załaduj CSV'):
+        try:
+            df_upload = pd.read_csv(uploaded_file)
+
+            if 'Kategoria' in df_upload.columns and 'Kwota [PLN]' in df_upload.columns:
+                for index, row in df_upload.iterrows():
+                    category = row['Kategoria']
+                    price = row['Kwota [PLN]']
+
+                    if category in st.session_state['wydatki']:
+                        st.session_state['wydatki'][category] += price
+                    else:
+                        # Jak kategoria jest dziwna, wrzucamy do Inne
+                        st.session_state['wydatki']['Inne'] += price
+
+                st.rerun()
+            else:
+                st.sidebar.error("Błąd: Plik musi mieć kolumny 'Kategoria' i 'Kwota [PLN]'")
+        except Exception as e:
+            st.sidebar.error(f"Coś poszło nie tak: {e}")
 
 col1, col2 = st.columns(2, vertical_alignment = 'center') #podział na 2 kolumny, wyśrodkowanie
 
