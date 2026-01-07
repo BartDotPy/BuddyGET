@@ -48,10 +48,26 @@ with col2:
         st.info('Aby wyświetlić wykres dodaj pierwszy wydatek')
 
 #Podsumowanie budżetu
-suma = df['Kwota [PLN]'].sum()
-st.metric(label="Łączne wydatki", value=f"{suma} PLN")
+limit = 2000 #pozniej dodac wybór limitu
+b_sum = df['Kwota [PLN]'].sum()
+st.metric(label="Łączne wydatki", value=f"{b_sum} PLN")
 
+#pasek budżetu
+left = limit - b_sum
+percent = b_sum/limit
 
+if percent > 1.0:
+    percent = 1.0 #blokada paska 
+
+col_sum1, col_sum2, col_sum3 = st.columns(3)
+col_sum1.metric('Wydano', f'{b_sum} PLN')
+col_sum2.metric('Limit', f'{limit} PLN')
+col_sum3.metric('Pozostało', f'{left} PLN')
+
+st.progress(percent)
+st.write(f'Zużycie budżetu: {int(percent * 100)}%')
+
+#eksport do csv
 st.header('Eksport danych - CSV (Excel)')
 csv_data = df.to_csv(index=False).encode('utf-8')
 
@@ -60,5 +76,4 @@ st.download_button(
     data = csv_data,
     file_name = 'moj_budzet.csv',
     mime = 'text/csv' 
-
 )
