@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# 1. Tytuł aplikacji
+#Tytuł aplikacji
 st.title("BuddGet - asystent twoich finansów💰")
-# 2. Tworzymy przykładowe dane (zamiast Excela)
+# Przygotowanie "słownika"
 if 'wydatki' not in st.session_state:
     st.session_state['wydatki'] = {
         'Jedzenie': 0,
@@ -49,11 +49,6 @@ with col2:
     else:
         st.info('Aby wyświetlić wykres dodaj pierwszy wydatek')
 
-# 5. Dodatek: Szybkie podsumowanie
+#Podsumowanie budżetu
 suma = df['Kwota [PLN]'].sum()
 st.metric(label="Łączne wydatki", value=f"{suma} PLN")
-
-if suma > 2000:
-    st.warning("Uwaga! Przekroczyłeś budżet 2000 zł!")
-else:
-    st.success("Budżet pod kontrolą.")
